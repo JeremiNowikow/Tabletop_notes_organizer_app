@@ -1,2 +1,2 @@
-# Tabletop notes organizer app
+# Tabletop organizer app
 

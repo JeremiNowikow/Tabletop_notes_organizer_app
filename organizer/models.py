@@ -11,6 +11,7 @@ class Character(PolymorphicModel):
     short_description = models.TextField()
     backstory = models.TextField(blank=True, null=True)
     age = models.PositiveIntegerField(blank=True, null=True)
+    gender = models.CharField(max_length=128, blank=True, null=True)
     race = models.CharField(max_length=128, blank=True, null=True)
     # Game master's private notes about the character, not viewable by the player users
     gm_notes = models.TextField(blank=True, null=True)
@@ -59,6 +60,9 @@ class Location(models.Model):
 
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 # event that happened in the history of the game's world
