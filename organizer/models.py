@@ -33,7 +33,8 @@ class PlayerCharacter(Character):
 
 
 class NonPlayableCharacter(Character):
-    statblock = models.ImageField(blank=True, null=True)
+    stat_block = models.ImageField(blank=True, null=True)
+    role = models.CharField(max_length=128, blank=True, null=True)
     history_with_players = models.TextField(blank=True, null=True)
 
 
@@ -41,8 +42,11 @@ class NonPlayableCharacter(Character):
 class Relationship(models.Model):
     first_person = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="from_rel")
     second_person = models.ForeignKey(Character, on_delete=models.CASCADE, related_name="to_rel")
-    name = models.CharField(max_length=128)  # eg. "lovers", "sworn enemies", etc.
+    type = models.CharField(max_length=128)  # eg. "lovers", "sworn enemies", etc.
     description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.first_person.name} - {self.second_person.name}: {self.type}"
 
 
 class Location(models.Model):

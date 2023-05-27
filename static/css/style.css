@@ -1,0 +1,15 @@
+.borderless td, .borderless th {
+  border: none;
+}
+/*html body {*/
+/*    background-color: rgba(0,0,0,1.00) !important;*/
+
+/*}*/
+
+/*body {*/
+/*  background: url("https://mdbootstrap.com/img/new/fluid/city/018.jpg") no-repeat center center fixed;*/
+/*  -webkit-background-size: cover;*/
+/*  -moz-background-size: cover;*/
+/*  background-size: cover;*/
+/*  -o-background-size: cover;*/
+/*}*/

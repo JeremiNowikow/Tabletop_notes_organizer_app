@@ -1,0 +1,156 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Character view{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <div class="row border-bottom border-3">
+                <div class="col"><h2 class="color-header text-uppercase">{{ character.name }}</h2></div>
+                <div class="col d-flex justify-content-end mb-2">
+                    <a href="/characters/edit/{{ character.id }}/" class="btn btn-primary rounded-0 m-1">Edit</a>
+                    <a href="/characters/delete/{{ character.id }}/" class="btn btn-danger rounded-0 m-1">Delete</a>
+                    <a href="{% url 'characters' %}" class="btn btn-success rounded-0 m-1">Return</a>
+                </div>
+        </div>
+
+
+    <div class="row border-bottom border-3 justify-content-center">
+                <h5>{{ character.short_description }}</h5>
+
+
+
+    </div>
+
+    <table class="table borderless">
+        <tbody>
+            {% if character.player %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Player</th>
+                    <td class="col-7">
+                        {{ character.player }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if character.gender %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Gender</th>
+                    <td class="col-7">
+                        {{ character.gender }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if character.race %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Race</th>
+                    <td class="col-7">
+                        {{ character.race }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if character.character_class %}
+                <tr class="d-flex">
+                    <th scope="row" class="col-2">Class</th>
+                    <td class="col-7">
+                        {{ character.character_class }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if character.level %}
+                <tr class="d-flex">
+                    <th scope="row" class="col-2">Level</th>
+                    <td class="col-7">
+                        {{ character.level }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if character.age %}
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Age</th>
+                        <td class="col-7">
+                            {{ character.age }}
+                        </td>
+                </tr>
+            {% endif %}
+
+            {% if character.appearance_description %}
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Appearance</th>
+                        <td class="col-7">
+                            {{ character.appearance_description }}
+                        </td>
+                </tr>
+            {% endif %}
+
+            {% if character.backstory %}
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Backstory</th>
+                        <td class="col-7">
+                            {{ character.backstory }}
+                        </td>
+                </tr>
+            {% endif %}
+
+            {% if character.gm_notes %}
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Game Master's notes</th>
+                        <td class="col-7">
+                            {{ character.gm_notes }}
+                        </td>
+                </tr>
+            {% endif %}
+
+            {% if character.role %}
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Role in story</th>
+                        <td class="col-7">
+                            {{ character.role }}
+                        </td>
+                </tr>
+            {% endif %}
+            {% if character.history_with_players %}
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">History with player characters</th>
+                        <td class="col-7">
+                            {{ character.history_with_players }}
+                        </td>
+                </tr>
+
+
+            {% endif %}
+            {% if character.relationships %}
+            <tr class="d-flex">
+                <td class="col-7"><h3><b>Relationships</b></h3></td>
+            </tr>
+            {% endif %}
+
+            {% if character.character_sheet %}
+                <tr class="d-flex">
+                        <th scope="row" class="col-2">Character sheet</th>
+                </tr>
+
+                <tr> <td class="col-7"><img width="50%" height="50%" src="{% static character.character_sheet.url %}"></td></tr>
+            {% endif %}
+
+            {% if character.stat_block %}
+                <tr class="d-flex">
+                        <th scope="row" class="col-2">Stat block</th>
+                </tr>
+                <tr>
+                    <td class="col-7"><img width="50%" height="50%" src="{% static character.stat_block.url %}"></td></tr>
+            {% endif %}
+
+        </tbody>
+    </table>
+
+    </div>
+
+
+
+
+
+{% endblock %}

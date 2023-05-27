@@ -1,0 +1,148 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Create new character{% endblock %}
+
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <form method="post">
+            <div class="mt-4 ml-4 mr-4">
+                <div class="row border-bottom border-3">
+                    <div class="col"><h3 class="color-header text-uppercase">
+                        New {% if player %}player{% else %}non-playable{% endif %} character
+                    </h3></div>
+                    <h4 style="color: red">
+                        {% if message %}
+                            {{ message }}
+                        {% endif %}
+                    </h4>
+                    <div class="col d-flex justify-content-end mb-2">
+                        <button type="submit"
+                                class="btn btn-success rounded-0 m-1">
+                            Save
+                        </button>
+                        <a href="{% url 'characters' %}" class="btn btn-success rounded-0 m-1">Return</a>
+                    </div>
+                </div>
+            <table class="table borderless">
+                <tbody>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Name</th>
+                        <td class="col-4">
+                            <input type="text" class="w-100 p-1" value="" name="name">
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Short description</th>
+                        <td class="col-8">
+                            <input type="text" class="w-100 p-1" value="" name="short_description">
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Gender</th>
+                        <td class="col-3">
+                            <input type="text" class="w-100 p-1" value="" name="gender">
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Race</th>
+                        <td class="col-3">
+                            <input type="text" class="w-100 p-1" value="" name="race">
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Age</th>
+                        <td class="col-1">
+                            <input class="w-100 p-1" type="number" value="" name="age">
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Appearance description</th>
+                        <td class="col-7">
+                            <textarea style="resize: none;" class="w-100 p-1" name="appearance"></textarea>
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Backstory</th>
+                        <td class="col-7">
+                            <textarea style="resize: none;" class="w-100 p-1" name="backstory"></textarea>
+                        </td>
+                    </tr>
+
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Game master's notes</th>
+                        <td class="col-7">
+                            <textarea style="resize: none;" class="w-100 p-1" name="gm_notes"></textarea>
+                        </td>
+                    </tr>
+
+                    {% if player %}
+                        <tr class="d-flex">
+                        <th scope="row" class="col-2">Player</th>
+                        <td class="col-3">
+                            <input type="text" class="w-100 p-1" value="" name="player">
+                        </td>
+                    </tr>
+
+                        <tr class="d-flex">
+                        <th scope="row" class="col-2">Class</th>
+                        <td class="col-3">
+                            <input type="text" class="w-100 p-1" value="" name="character_class">
+                        </td>
+                    </tr>
+
+                        <tr class="d-flex">
+                        <th scope="row" class="col-2">Level</th>
+                        <td class="col-1">
+                            <input class="w-100 p-1" type="number" value="" name="level">
+                        </td>
+                    </tr>
+
+                        <tr class="d-flex">
+                        <th scope="row" class="col-2">Character sheet</th>
+                        <td class="col-1">
+                            <label>Choose image file
+                              <input type="file" name="character_sheet" accept="image/png, image/jpeg" />
+                            </label>
+                        </td>
+                    </tr>
+
+
+
+                    {% else %}
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Role in the story</th>
+                            <td class="col-3">
+                                <input type="text" class="w-100 p-1" value="" name="role">
+                            </td>
+                        </tr>
+
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">History with the player characters</th>
+                            <td class="col-7">
+                                <textarea style="resize: none;" class="w-100 p-1" name="history_with_players"></textarea>
+                            </td>
+                    </tr>
+
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Stat block</th>
+                            <td class="col-1">
+                                <label>Choose image file
+                                  <input type="file" name="stat_block" accept="image/png, image/jpeg" />
+                                </label>
+                            </td>
+                        </tr>
+
+                    {% endif %}
+
+
+                </tbody>
+            </table>
+
+
+            </div>
+        {% csrf_token %}
+        </form>
+
+    </div>
+
+{% endblock %}
