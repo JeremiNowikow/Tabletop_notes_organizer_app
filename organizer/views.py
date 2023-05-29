@@ -7,6 +7,7 @@ from django.views import View
 from django.views.generic import UpdateView
 from organizer.additional_functions import validate_age_or_level
 from organizer.models import *
+from django.db.models import Q
 
 
 # Create your views here.
@@ -52,11 +53,9 @@ class ShowCharacterDetails(View):
         else:
             player_char = False
 
-        relationships = []
-        for rel in character.relations:
+        relationships = character.relationships.through.objects.filter(Q(first_person=character.pk) | Q(second_person=character.pk))
 
-
-        return render(request, 'organizer/character_view.html', {'player_char': player_char, 'character': character})
+        return render(request, 'organizer/character_view.html', {'player_char': player_char, 'character': character, 'relationships': relationships})
 
 
 # deletes the chosen character from the database
@@ -182,3 +181,66 @@ class EditCharacter(View):
             character.history_with_players = request.POST.get('history_with_players')
         character.save()
         return redirect('character-details', id=character.pk)
+
+class LocationListView(View):
+    def get(self, request):
+        locations = Location.objects.all().order_by('name')
+        paginator = Paginator(locations, 25)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'organizer/locations.html', {'page_obj': page_obj})
+
+    def post(self, request):
+        if 'search' in request.POST:
+            search = request.POST.get('searchText')
+            locations = Location.objects.filter(name__icontains=search).order_by('name')
+        paginator = Paginator(locations, 25)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'organizer/locations.html', {'page_obj': page_obj})
+
+
+# creates a new relationship between two characters
+class AddRelationship(View):
+     def get(self, request, id):
+          character = Character.objects.get(pk=id)
+          all_characters = Character.objects.filter(~Q(pk=id))
+          return render(request, 'organizer/create_relationship.html', {'character': character, 'all_characters': all_characters})
+     def post(self, request, id):
+          first_character = Character.objects.get(pk=id)
+          second_character = Character.objects.get(pk=request.POST.get('second'))
+          type = request.POST.get('type')
+          description = request.POST.get('description')
+
+          Relationship.objects.create(first_person=first_character,
+                                      second_person=second_character,
+                                      type=type,
+                                      description=description)
+          return redirect('character-details', id=id)
+
+
+# deletes an existing relationship from the database
+class DeleteRelationship(View):
+    def get(self, request, id, char_id):
+        relationship = Relationship.objects.get(pk=id)
+        relationship.delete()
+        return redirect('character-details', id=char_id)
+
+
+class EditRelationship(View):
+    def get(self, request, id):
+        relationship = Relationship.objects.get(pk=id)
+        return render(request, 'organizer/edit_relationship.html', {'relationship': relationship})
+
+
+class DeleteLocation(View):
+    def get(self, request, id):
+        location = Location.objects.get(pk=id)
+        location.delete()
+        return redirect('locations')
+
+class ShowLocationDetails(View):
+    def get(self, request, id):
+        location = Location.objects.get(pk=id)
+
+        return render(request, 'organizer/location_view.html', {'location': location})

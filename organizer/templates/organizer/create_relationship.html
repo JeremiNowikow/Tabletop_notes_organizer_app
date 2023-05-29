@@ -1,0 +1,64 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Create new character{% endblock %}
+
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <form method="post">
+            <div class="mt-4 ml-4 mr-4">
+                <div class="row border-bottom border-3">
+                    <div class="col"><h3 class="color-header text-uppercase">
+                        New relationship
+                    </h3></div>
+                    <h4 style="color: red">
+                        {% if message %}
+                            {{ message }}
+                        {% endif %}
+                    </h4>
+                    <div class="col d-flex justify-content-end mb-2">
+                        <button type="submit"
+                                class="btn btn-success rounded-0 m-1">
+                            Save
+                        </button>
+                        <a href="{% url 'character-details' id=character.id %}" class="btn btn-success rounded-0 m-1">Return</a>
+                    </div>
+                </div>
+            <table class="table borderless">
+                <tbody>
+                <tr class="d-flex">
+                        <th scope="row" class="col-2">First character</th>
+                        <td class="col-4">
+                            {{ character.name }}
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Second character</th>
+                        <td class="col-2">
+                            <select name="second">
+                                {% for char in all_characters %}
+                                    <option value="{{ char.id }}">{{ char.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Type (eg. friends, lovers.)</th>
+                        <td class="col-3">
+                            <input type="text" class="w-100 p-1" value="" name="type">
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                            <th scope="row" class="col-2">Details</th>
+                            <td class="col-8">
+                                <textarea style="resize: none;" class="w-100 p-1" name="description"></textarea>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+            </div>
+        {% csrf_token %}
+        </form>
+
+    </div>
+
+{% endblock %}

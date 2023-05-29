@@ -57,7 +57,8 @@ class Location(models.Model):
 
     # any characters living in the location or that have a history with it
     related_characters = models.ManyToManyField(Character, blank=True)
-    description = models.TextField(null=True, blank=True)
+    description = models.CharField(max_length=128)
+    location_lore = models.TextField(null=True, blank=True)
 
     # Game master's private notes about the location, not viewable by the player users
     gm_notes = models.TextField(blank=True, null=True)

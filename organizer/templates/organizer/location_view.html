@@ -1,0 +1,56 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Location view{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <div class="row border-bottom border-3">
+                <div class="col"><h2 class="color-header text-uppercase">{{ location.name }}</h2></div>
+                <div class="col d-flex justify-content-end mb-2">
+                    <a href="/locations/edit/{{ location.id }}/" class="btn btn-primary rounded-0 m-1">Edit</a>
+                    <a href="/locations/delete/{{ location.id }}/" class="btn btn-danger rounded-0 m-1">Delete</a>
+                    <a href="{% url 'locations' %}" class="btn btn-success rounded-0 m-1">Return</a>
+                </div>
+        </div>
+
+
+    <div class="row border-bottom border-3 justify-content-center">
+                <h5>{{ location.description }}</h5>
+
+    </div>
+
+    <table class="table borderless">
+        <tbody>
+            {% if location.parent_location %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Located in: </th>
+                    <td class="col-7">
+                        {{ location.parent_location.name }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if location.location_lore %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Lore</th>
+                    <td class="col-7">
+                        {{ location.location_lore }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if location.gm_notes %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Game master's notes</th>
+                    <td class="col-7">
+                        {{ location.gm_notes }}
+                    </td>
+            </tr>
+            {% endif %}
+
+        </tbody>
+    </table>
+
+    </div>
+
+{% endblock %}
