@@ -1,0 +1,46 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Campaign event view{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <div class="row border-bottom border-3">
+                <div class="col"><h2 class="color-header text-uppercase">{{ event.name }}</h2></div>
+                <div class="col d-flex justify-content-end mb-2">
+                    <a href="/campaign-events/edit/{{ event.id }}/" class="btn btn-primary rounded-0 m-1">Edit</a>
+                    <a href="/campaign-events/delete/{{ event.id }}/" class="btn btn-danger rounded-0 m-1">Delete</a>
+                    <a href="{% url 'campaign-events' %}" class="btn btn-success rounded-0 m-1">Return</a>
+                </div>
+        </div>
+
+
+
+    <table class="table borderless">
+        <tbody>
+            {% if event.summary %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Summary </th>
+                    <td class="col-7">
+                        {{ event.summary }}
+                    </td>
+            </tr>
+            {% endif %}
+
+
+            {% if event.gm_notes %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Game master's notes</th>
+                    <td class="col-7">
+                        {{ event.gm_notes }}
+                    </td>
+            </tr>
+            {% endif %}
+
+
+
+        </tbody>
+    </table>
+
+    </div>
+
+{% endblock %}

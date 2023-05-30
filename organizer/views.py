@@ -450,6 +450,7 @@ class EditLoreEvent(View):
         return redirect('lore-event-details', id=id)
 
 
+# displays the list of all campaign events, sorted chronologically according to their internal logic
 class CampaignEventListView(View):
     def get(self, request):
         if CampaignEvent.objects.count() > 0:
@@ -479,4 +480,116 @@ class CampaignEventListView(View):
         else:
             events_list = []
 
-        filtered_object = 
+        if 'search' in request.POST:
+            search = request.POST.get('searchText')
+            filtered_events = CampaignEvent.objects.filter(name__icontains=search)
+            for event in events_list:
+                if event not in filtered_events:
+                    events_list.remove(event)
+
+        paginator = Paginator(events_list, 25)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'organizer/campaign_events.html', {'page_obj': page_obj})
+
+
+# removes the specified campaign event from the database
+class DeleteCampaignEvent(View):
+    def get(self, request, id):
+        event = CampaignEvent.objects.get(pk=id)
+        prev_event = event.previous_event
+        next_event = CampaignEvent.objects.filter(previous_event=event).first()
+        event.delete()
+
+        if next_event:
+            next_event.previous_event = prev_event
+            next_event.save()
+
+
+        return redirect('campaign-events')
+
+# displays the details about the specified campaign event
+class CampaignEventDetails(View):
+    def get(self, request, id):
+        event = CampaignEvent.objects.get(pk=id)
+        return render(request, 'organizer/campaign_event_view.html', {'event': event})
+
+
+# adds a new campaign events chronologically between existing events
+class AddCampaignEventAbove(View):
+    def get(self, request, id):
+        return render(request, 'organizer/create_campaign_event.html')
+    def post(self, request, id):
+        event = CampaignEvent.objects.get(pk=id)
+        prev_event = event.previous_event
+
+        name = request.POST.get('name')
+        summary = request.POST.get('summary')
+        gm_notes = request.POST.get('gm_notes')
+
+        event.previous_event = None
+
+        CampaignEvent.objects.create(name=name,
+                                     summary=summary,
+                                     gm_notes=gm_notes,
+                                     previous_event=None,
+                                     updated_at=datetime.datetime.now(),
+                                     created_at=datetime.datetime.now())
+
+        new_event = CampaignEvent.objects.last()
+        event.previous_event = new_event
+        event.save()
+        new_event.previous_event = prev_event
+        new_event.save()
+
+
+
+        return redirect('campaign-events')
+
+
+class EditCampaignEvent(View):
+    def get(self, request, id):
+        event = CampaignEvent.objects.get(pk=id)
+        return render(request, 'organizer/edit_campaign_event.html', {'event': event})
+    def post(self, request, id):
+        event = CampaignEvent.objects.get(pk=id)
+        event.name = request.POST.get('name')
+
+        event.summary = request.POST.get('summary')
+        event.gm_notes = request.POST.get('gm_notes')
+
+        event.updated_at = datetime.datetime.now()
+
+        event.save()
+
+        return redirect('campaign-event-details', id=id)
+
+
+# adds a new campaign event as the last in chronological order
+class AddCampaignEventEnd(View):
+    def get(self, request):
+        return render(request, 'organizer/create_campaign_event.html')
+    def post(self, request):
+        name = request.POST.get('name')
+        summary = request.POST.get('summary')
+        gm_notes = request.POST.get('gm_notes')
+
+        if CampaignEvent.objects.count() > 0:
+            events_list = [CampaignEvent.objects.filter(previous_event=None).first()]
+            current_event = events_list[0]
+
+            for i in range(CampaignEvent.objects.count()-1):
+                events_list.append(CampaignEvent.objects.filter(previous_event=current_event).first())
+                current_event = events_list[-1]
+
+        else:
+            current_event = None
+
+        CampaignEvent.objects.create(name=name,
+                                     summary=summary,
+                                     gm_notes=gm_notes,
+                                     updated_at=datetime.datetime.now(),
+                                     created_at=datetime.datetime.now(),
+                                     previous_event=current_event)
+
+        return redirect('campaign-events')

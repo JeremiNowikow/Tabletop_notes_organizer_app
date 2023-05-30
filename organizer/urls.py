@@ -27,6 +27,12 @@ urlpatterns = [
     path('lore-events/edit/<int:id>/', organizer_views.EditLoreEvent.as_view(), name='edit-lore-event'),
     path('add-lore-event/', organizer_views.AddLoreEvent.as_view(), name='add-lore-event'),
     path('campaign-events/', organizer_views.CampaignEventListView.as_view(), name='campaign-events'),
+    path('campaign-events/delete/<int:id>/', organizer_views.DeleteCampaignEvent.as_view(), name='delete-campaign-event'),
+    path('campaign-events/<int:id>/', organizer_views.CampaignEventDetails.as_view(), name='campaign-event-details'),
+    path('campaign-events/add-above/<int:id>/', organizer_views.AddCampaignEventAbove.as_view(), name='add-campaign-event-above'),
+    path('campaign-events/add/', organizer_views.AddCampaignEventEnd.as_view(), name='add-campaign-event-end'),
+    path('campaign-events/edit/<int:id>/', organizer_views.EditCampaignEvent.as_view(), name='edit-campaign-event'),
+
 
 
 

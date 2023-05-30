@@ -102,6 +102,9 @@ class CampaignEvent(models.Model):
     # points to the previous event in the story, helping to form a timeline of events
     previous_event = models.OneToOneField('self', null=True, blank=True, on_delete=models.SET_NULL)
 
+    # Game master's private notes about the event, not viewable by the player users
+    gm_notes = models.TextField(blank=True, null=True)
+
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 

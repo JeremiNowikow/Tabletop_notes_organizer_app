@@ -8,7 +8,7 @@
             <div class="col noPadding"><h2 class="color-header text-uppercase">Campaign summary</h2></div>
             <div class="col noPadding d-flex justify-content-end mb-2">
                 <form method="POST" class="col noPadding d-flex justify-content-end mb-2">
-                    <a href="" class="btn btn-success rounded-0 text-light m-1">Add new event at the end</a>
+                    <a href="{% url 'add-campaign-event-end' %}" class="btn btn-success rounded-0 text-light m-1">Add new event at the end</a>
                     {% csrf_token %}
                 </form>
 
@@ -42,7 +42,7 @@
                     <td class="col-8">{{ event.name }}</td>
                     <td class="col-3 d-flex align-items-center justify-content-center flex-wrap">
                         <a href="/campaign-events/{{ event.id }}/" class="btn btn-primary rounded-0 m-1">View details</a>
-                        <a href="/campaign-events/add/{{ event.id }}/" class="btn btn-primary rounded-0 m-1">Add event above</a>
+                        <a href="/campaign-events/add-above/{{ event.id }}/" class="btn btn-primary rounded-0 m-1">Add event above</a>
                         <a href="/campaign-events/edit/{{ event.id }}/" class="btn btn-primary rounded-0 text-light m-1">Edit</a>
                         <a href="/campaign-events/delete/{{ event.id }}/" class="btn btn-danger rounded-0 text-light m-1">Delete</a>
 
