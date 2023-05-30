@@ -90,6 +90,9 @@ class LoreEvent(models.Model):
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 # what happened during the actual game with the players, basically to help write a summary of events so far
 class CampaignEvent(models.Model):
@@ -97,7 +100,10 @@ class CampaignEvent(models.Model):
     summary = models.TextField(null=True, blank=True)
 
     # points to the previous event in the story, helping to form a timeline of events
-    previous_event = models.OneToOneField('self', null=True, on_delete=models.SET_NULL)
+    previous_event = models.OneToOneField('self', null=True, blank=True, on_delete=models.SET_NULL)
 
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.name}"

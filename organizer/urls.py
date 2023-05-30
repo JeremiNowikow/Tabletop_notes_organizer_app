@@ -21,6 +21,13 @@ urlpatterns = [
     path('relationships/<int:id>/<int:char_id>/', organizer_views.RelationshipDetails.as_view(), name='relationship-details'),
     path('add-location/', organizer_views.AddLocation.as_view(), name='add-location'),
     path('locations/edit/<int:id>/', organizer_views.EditLocation.as_view(), name='edit-location'),
+    path('lore-events/', organizer_views.LoreEventListView.as_view(), name='lore-events'),
+    path('lore-events/<int:id>/', organizer_views.LoreEventDetails.as_view(), name='lore-event-details'),
+    path('lore-events/delete/<int:id>/', organizer_views.DeleteLoreEvent.as_view(), name='delete-lore-event'),
+    path('lore-events/edit/<int:id>/', organizer_views.EditLoreEvent.as_view(), name='edit-lore-event'),
+    path('add-lore-event/', organizer_views.AddLoreEvent.as_view(), name='add-lore-event'),
+    path('campaign-events/', organizer_views.CampaignEventListView.as_view(), name='campaign-events'),
+
 
 
 

@@ -1,0 +1,80 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Location view{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <div class="row border-bottom border-3">
+                <div class="col"><h2 class="color-header text-uppercase">{{ event.name }}</h2></div>
+                <div class="col d-flex justify-content-end mb-2">
+                    <a href="/lore-events/edit/{{ event.id }}/" class="btn btn-primary rounded-0 m-1">Edit</a>
+                    <a href="/lore-events/delete/{{ event.id }}/" class="btn btn-danger rounded-0 m-1">Delete</a>
+                    <a href="{% url 'lore-events' %}" class="btn btn-success rounded-0 m-1">Return</a>
+                </div>
+        </div>
+
+
+
+    <table class="table borderless">
+        <tbody>
+            {% if event.time %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Time </th>
+                    <td class="col-7">
+                        {{ event.time }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if event.related_characters %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Related characters</th>
+                    <td class="col-7">
+                        <ul style="list-style-type:none; padding: 0; margin: 0; ">
+                            {% for char in event.related_characters.all %}
+                                <li>{{ char.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if event.related_locations %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Related locations</th>
+                    <td class="col-7">
+                        <ul style="list-style-type:none; padding: 0; margin: 0; ">
+                            {% for loc in event.related_locations.all %}
+                                <li>{{ loc.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if event.summary %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Summary</th>
+                    <td class="col-7">
+                        {{ event.summary }}
+                    </td>
+            </tr>
+            {% endif %}
+
+            {% if event.gm_notes %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Game master's notes</th>
+                    <td class="col-7">
+                        {{ event.gm_notes }}
+                    </td>
+            </tr>
+            {% endif %}
+
+
+
+        </tbody>
+    </table>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Campaign events {% endblock %}
+
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <div class="row border-bottom border-3 p-1 m-1">
+            <div class="col noPadding"><h2 class="color-header text-uppercase">Campaign summary</h2></div>
+            <div class="col noPadding d-flex justify-content-end mb-2">
+                <form method="POST" class="col noPadding d-flex justify-content-end mb-2">
+                    <a href="" class="btn btn-success rounded-0 text-light m-1">Add new event at the end</a>
+                    {% csrf_token %}
+                </form>
+
+            </div>
+        </div>
+
+        <div class="border-bottom border-3 p-1 m-1 inline-block">
+            <form method="POST">
+                <input type="text" placeholder="Search event by name" name="searchText">
+                <button type="submit" name="search"
+                        class="btn btn-primary rounded-0 pt-0 pb-0 pr-4 pl-4">
+                    Search
+                </button>
+                {% csrf_token %}
+            </form>
+        </div>
+
+    <table class="table border-bottom schedules-content">
+        <thead>
+                <tr class="d-flex text-color-darker">
+                    <th scope="col" class="col-1">Nr.</th>
+                    <th scope="col" class="col-8">Name</th>
+
+                    <th scope="col" class="col-3 center">Actions</th>
+                </tr>
+                </thead>
+        <tbody>
+            {% for event in page_obj %}
+                <tr class="d-flex">
+                    <th scope="row" class="col-1">{{ forloop.counter }}</th>
+                    <td class="col-8">{{ event.name }}</td>
+                    <td class="col-3 d-flex align-items-center justify-content-center flex-wrap">
+                        <a href="/campaign-events/{{ event.id }}/" class="btn btn-primary rounded-0 m-1">View details</a>
+                        <a href="/campaign-events/add/{{ event.id }}/" class="btn btn-primary rounded-0 m-1">Add event above</a>
+                        <a href="/campaign-events/edit/{{ event.id }}/" class="btn btn-primary rounded-0 text-light m-1">Edit</a>
+                        <a href="/campaign-events/delete/{{ event.id }}/" class="btn btn-danger rounded-0 text-light m-1">Delete</a>
+
+                    </td>
+                </tr>
+
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+                    </div>
+    </div>
+
+    </div>
+
+{% endblock content %}

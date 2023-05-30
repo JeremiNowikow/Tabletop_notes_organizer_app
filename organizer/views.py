@@ -182,6 +182,8 @@ class EditCharacter(View):
         character.save()
         return redirect('character-details', id=character.pk)
 
+
+# displays the list of all location in the database
 class LocationListView(View):
     def get(self, request):
         locations = Location.objects.all().order_by('name')
@@ -257,6 +259,7 @@ class EditRelationship(View):
         return redirect('character-details', id=id)
 
 
+# displays the details of the specified relationship with its description
 class RelationshipDetails(View):
     def get(self, request, id, char_id):
         relationship = Relationship.objects.get(pk=id)
@@ -265,19 +268,23 @@ class RelationshipDetails(View):
 
 
 
-
+# deletes a location from the database
 class DeleteLocation(View):
     def get(self, request, id):
         location = Location.objects.get(pk=id)
         location.delete()
         return redirect('locations')
 
+
+# displays the details about the specified location
 class ShowLocationDetails(View):
     def get(self, request, id):
         location = Location.objects.get(pk=id)
 
         return render(request, 'organizer/location_view.html', {'location': location})
 
+
+# add a location to the database
 class AddLocation(View):
     def get(self, request):
         locations = Location.objects.all()
@@ -311,6 +318,8 @@ class AddLocation(View):
         return redirect('locations')
 
 
+
+# edits an existing location through user input
 class EditLocation(View):
     def get(self, request, id):
         location = Location.objects.get(pk=id)
@@ -337,3 +346,137 @@ class EditLocation(View):
         location.save()
 
         return redirect('location-details', id=id)
+
+
+# displays the list of all events in the game's lore
+class LoreEventListView(View):
+    def get(self, request):
+        events = LoreEvent.objects.all().order_by('name')
+        paginator = Paginator(events, 25)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'organizer/lore_events.html', {'page_obj': page_obj})
+    def post(self, request):
+        if 'search' in request.POST:
+            search = request.POST.get('searchText')
+            events = LoreEvent.objects.filter(name__icontains=search).order_by('name')
+        paginator = Paginator(events, 25)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'organizer/lore_events.html', {'page_obj': page_obj})
+
+
+
+# deletes lore event from the database
+class DeleteLoreEvent(View):
+    def get(self, request, id):
+        event = LoreEvent.objects.get(pk=id)
+        event.delete()
+        return redirect('lore-events')
+
+
+
+# adds a new lore event to the database
+class AddLoreEvent(View):
+    def get(self, request):
+        locations = Location.objects.all()
+        characters = Character.objects.all()
+        return render(request, 'organizer/create_lore_event.html', {'locations': locations, 'characters': characters})
+    def post(self, request):
+        name = request.POST.get('name')
+        time = request.POST.get('time')
+        summary = request.POST.get('summary')
+        gm_notes = request.POST.get('gm_notes')
+        related_locations = request.POST.getlist('related_locations')
+        related_characters = request.POST.getlist('related_characters')
+
+        LoreEvent.objects.create(name=name,
+                                 time=time,
+                                 summary=summary,
+                                 gm_notes=gm_notes,
+                                 updated_at=datetime.datetime.now(),
+                                 created_at=datetime.datetime.now())
+
+        event = LoreEvent.objects.last()
+
+        for char in related_characters:
+            event.related_characters.add(Character.objects.get(pk=char))
+
+        for loc in related_locations:
+            event.related_locations.add(Location.objects.get(pk=loc))
+
+        event.save()
+
+        return redirect('lore-events')
+
+
+# displays details about the specified lore event
+class LoreEventDetails(View):
+    def get(self, request, id):
+        event = LoreEvent.objects.get(pk=id)
+        return render(request, 'organizer/lore_event_view.html', {'event': event})
+
+
+# edits information about the specified lore event
+class EditLoreEvent(View):
+    def get(self, request, id):
+        locations = Location.objects.all()
+        characters = Character.objects.all()
+        event = LoreEvent.objects.get(pk=id)
+        return render(request, 'organizer/edit_lore_event.html', {'locations': locations, 'event': event, 'characters': characters})
+    def post(self, request, id):
+        event = LoreEvent.objects.get(pk=id)
+        event.name = request.POST.get('name')
+
+        event.time = request.POST.get('time')
+        event.summary = request.POST.get('summary')
+        event.gm_notes = request.POST.get('gm_notes')
+
+        event.updated_at = datetime.datetime.now()
+
+        event.related_characters.clear()
+        event.related_locations.clear()
+        related_characters = request.POST.getlist('related_characters')
+        related_locations = request.POST.getlist('related_locations')
+
+        for char in related_characters:
+            event.related_characters.add(Character.objects.get(pk=char))
+
+        for loc in related_locations:
+            event.related_locations.add(Location.objects.get(pk=loc))
+
+        event.save()
+
+        return redirect('lore-event-details', id=id)
+
+
+class CampaignEventListView(View):
+    def get(self, request):
+        if CampaignEvent.objects.count() > 0:
+            events_list = [CampaignEvent.objects.filter(previous_event=None).first()]
+            current_event = events_list[0]
+
+            for i in range(CampaignEvent.objects.count()-1):
+                events_list.append(CampaignEvent.objects.filter(previous_event=current_event).first())
+                current_event = events_list[-1]
+
+        else:
+            events_list = []
+        paginator = Paginator(events_list, 25)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'organizer/campaign_events.html', {'page_obj': page_obj})
+
+    def post(self, request):
+        if CampaignEvent.objects.count() > 0:
+            events_list = [CampaignEvent.objects.filter(previous_event=None).first()]
+            current_event = events_list[0]
+
+            for i in range(CampaignEvent.objects.count()-1):
+                events_list.append(CampaignEvent.objects.filter(previous_event=current_event).first())
+                current_event = events_list[-1]
+
+        else:
+            events_list = []
+
+        filtered_object = 
