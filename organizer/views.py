@@ -227,10 +227,43 @@ class DeleteRelationship(View):
         return redirect('character-details', id=char_id)
 
 
+# edits an existing relationship
 class EditRelationship(View):
-    def get(self, request, id):
+    def get(self, request, id, char_id):
         relationship = Relationship.objects.get(pk=id)
-        return render(request, 'organizer/edit_relationship.html', {'relationship': relationship})
+        all_characters = Character.objects.filter(~Q(pk=id))
+
+        if relationship.first_person.id == char_id:
+            character = relationship.first_person
+            second_character = relationship.second_person
+        else:
+            second_character = relationship.first_person
+            character = relationship.second_person
+
+        return render(request, 'organizer/edit_relationship.html', {'relationship': relationship, 'all_characters': all_characters,
+                                                                    'character': character, 'second_character': second_character})
+    def post(self, request, id, char_id):
+        relationship = Relationship.objects.get(pk=id)
+
+        second_character = Character.objects.get(pk=request.POST.get('second'))
+        type = request.POST.get('type')
+        description = request.POST.get('description')
+
+        relationship.second_person = second_character
+        relationship.type = type
+        relationship.description = description
+        relationship.save()
+
+        return redirect('character-details', id=id)
+
+
+class RelationshipDetails(View):
+    def get(self, request, id, char_id):
+        relationship = Relationship.objects.get(pk=id)
+        character = Character.objects.get(pk=char_id)
+        return render(request, 'organizer/relationship_view.html', {'relationship': relationship, 'character': character})
+
+
 
 
 class DeleteLocation(View):
@@ -244,3 +277,63 @@ class ShowLocationDetails(View):
         location = Location.objects.get(pk=id)
 
         return render(request, 'organizer/location_view.html', {'location': location})
+
+class AddLocation(View):
+    def get(self, request):
+        locations = Location.objects.all()
+        characters = Character.objects.all()
+        return render(request, 'organizer/create_location.html', {'locations': locations, 'characters': characters})
+    def post(self, request):
+        name = request.POST.get('name')
+        if request.POST.get('parent_location'):
+            located_in = Location.objects.get(pk=request.POST.get('parent_location'))
+        else:
+            located_in = None
+        description = request.POST.get('description')
+        location_lore = request.POST.get('location_lore')
+        gm_notes = request.POST.get('gm_notes')
+
+        Location.objects.create(name=name,
+                                parent_location=located_in,
+                                description=description,
+                                location_lore=location_lore,
+                                gm_notes=gm_notes,
+                                created_at=datetime.datetime.now(),
+                                updated_at=datetime.datetime.now())
+
+        location = Location.objects.last()
+
+        related_characters = request.POST.getlist('related_characters')
+        for char in related_characters:
+            location.related_characters.add(Character.objects.get(pk=char))
+        location.save()
+
+        return redirect('locations')
+
+
+class EditLocation(View):
+    def get(self, request, id):
+        location = Location.objects.get(pk=id)
+        other_locations = Location.objects.filter(~Q(pk=id))
+        characters = Character.objects.all()
+        return render(request, 'organizer/edit_location.html', {'location': location, 'other_locations': other_locations, 'characters': characters})
+    def post(self, request, id):
+        location = Location.objects.get(pk=id)
+        location.name = request.POST.get('name')
+        if request.POST.get('parent_location'):
+            location.parent_location = Location.objects.get(pk=request.POST.get('parent_location'))
+        else:
+            location.parent_location = None
+        location.description = request.POST.get('description')
+        location.location_lore = request.POST.get('location_lore')
+        location.gm_notes = request.POST.get('gm_notes')
+
+        location.updated_at = datetime.datetime.now()
+
+        location.related_characters.clear()
+        related_characters = request.POST.getlist('related_characters')
+        for char in related_characters:
+            location.related_characters.add(Character.objects.get(pk=char))
+        location.save()
+
+        return redirect('location-details', id=id)

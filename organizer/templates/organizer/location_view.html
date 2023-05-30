@@ -48,6 +48,19 @@
             </tr>
             {% endif %}
 
+            {% if location.related_characters %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Related characters</th>
+                    <td class="col-7">
+                        <ul style="list-style-type:none; padding: 0; margin: 0; ">
+                            {% for char in location.related_characters.all %}
+                                <li>{{ char.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+            </tr>
+            {% endif %}
+
         </tbody>
     </table>
 

@@ -136,7 +136,8 @@
                             {{ relation.type }}
                         </td>
                     <td class="col-4">
-                        <a href="/relationships/edit/{{ relation.id }}/" class="btn btn-primary rounded-0 m-1">Edit relationship</a>
+                        <a href="/relationships/{{ relation.id }}/{{ character.id }}/" class="btn btn-primary rounded-0 m-1">View details</a>
+                        <a href="/relationships/edit/{{ relation.id }}/{{ character.id }}/" class="btn btn-primary rounded-0 m-1">Edit relationship</a>
                         <a href="/relationships/delete/{{ relation.id }}/{{ character.id }}/" class="btn btn-danger rounded-0 m-1">Delete relationship</a>
                     </td>
                     </tr>

@@ -8,7 +8,7 @@
             <div class="col noPadding"><h2 class="color-header text-uppercase">Locations</h2></div>
             <div class="col noPadding d-flex justify-content-end mb-2">
                 <form method="POST" class="col noPadding d-flex justify-content-end mb-2">
-                    <a href="" class="btn btn-success rounded-0 text-light m-1">Add location</a>
+                    <a href="{% url 'add-location' %}" class="btn btn-success rounded-0 text-light m-1">Add location</a>
                     {% csrf_token %}
                 </form>
 
@@ -44,7 +44,7 @@
                     <td class="col-3 d-flex align-items-center justify-content-center flex-wrap">
                         <a href="/locations/{{ location.id }}/" class="btn btn-primary rounded-0 m-1">View details</a>
                         <a href="/locations/edit/{{ location.id }}/" class="btn btn-primary rounded-0 text-light m-1">Edit</a>
-                        <a href="/locations/delete/{{ character.id }}/" class="btn btn-danger rounded-0 text-light m-1">Delete</a>
+                        <a href="/locations/delete/{{ location.id }}/" class="btn btn-danger rounded-0 text-light m-1">Delete</a>
 
                     </td>
                 </tr>

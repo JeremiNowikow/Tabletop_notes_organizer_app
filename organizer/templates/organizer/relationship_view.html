@@ -1,0 +1,52 @@
+{% extends 'organizer/menu.html' %}
+
+{% block title %}Relationship view{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        <div class="row border-bottom border-3">
+                <div class="col"><h2 class="color-header text-uppercase">Relationship details</h2></div>
+                <div class="col d-flex justify-content-end mb-2">
+                    <a href="/relationships/edit/{{ relationship.id }}/{{ character.id }}/" class="btn btn-primary rounded-0 m-1">Edit</a>
+                    <a href="/relationships/delete/{{ relationship.id }}/{{ character.id }}/" class="btn btn-danger rounded-0 m-1">Delete</a>
+                    <a href="{% url 'character-details' id=character.id %}" class="btn btn-success rounded-0 m-1">Return</a>
+                </div>
+        </div>
+
+        <div class="row border-bottom border-3 justify-content-center">
+                <h5>{{ relationship.first_person.name }} - {{ relationship.second_person.name }}</h5>
+
+    </div>
+
+
+    <table class="table borderless">
+        <tbody>
+
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Type</th>
+                    <td class="col-4">
+                        {{ relationship.type }}
+                    </td>
+            </tr>
+
+        {% if relationship.description %}
+            <tr class="d-flex">
+                    <th scope="row" class="col-2">Details</th>
+                    <td class="col-6">
+                        {{ relationship.description }}
+                    </td>
+            </tr>
+        {% endif %}
+
+
+
+        </tbody>
+    </table>
+
+    </div>
+
+
+
+
+
+{% endblock %}

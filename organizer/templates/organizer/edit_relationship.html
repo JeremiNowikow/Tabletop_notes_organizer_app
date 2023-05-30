@@ -1,6 +1,6 @@
 {% extends 'organizer/menu.html' %}
 
-{% block title %}Create new relationship{% endblock %}
+{% block title %}Edit relationship{% endblock %}
 
 {% block content %}
     <div class="dashboard-content border-dashed p-3 m-4 view-height">
@@ -8,7 +8,7 @@
             <div class="mt-4 ml-4 mr-4">
                 <div class="row border-bottom border-3">
                     <div class="col"><h3 class="color-header text-uppercase">
-                        New relationship
+                        Edit relationship
                     </h3></div>
                     <h4 style="color: red">
                         {% if message %}
@@ -36,7 +36,7 @@
                         <td class="col-2">
                             <select name="second">
                                 {% for char in all_characters %}
-                                    <option value="{{ char.id }}">{{ char.name }}</option>
+                                    <option value="{{ char.id }}" {% if second_character.id == char.id %}selected{% endif %}>{{ char.name }}</option>
                                 {% endfor %}
                             </select>
                         </td>
@@ -44,13 +44,13 @@
                     <tr class="d-flex">
                         <th scope="row" class="col-2">Type (eg. friends, lovers.)</th>
                         <td class="col-3">
-                            <input type="text" class="w-100 p-1" value="" name="type">
+                            <input type="text" class="w-100 p-1" value="{{ relationship.type }}" name="type">
                         </td>
                     </tr>
                     <tr class="d-flex">
                             <th scope="row" class="col-2">Details</th>
                             <td class="col-8">
-                                <textarea style="resize: none;" class="w-100 p-1" name="description"></textarea>
+                                <textarea style="resize: none;" class="w-100 p-1" name="description">{{ relationship.description }}</textarea>
                             </td>
                         </tr>
                 </tbody>
