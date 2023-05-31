@@ -488,12 +488,17 @@ class CampaignEventListView(View):
 
         if 'search' in request.POST:
             search = request.POST.get('searchText')
-            filtered_events = CampaignEvent.objects.filter(name__icontains=search)
+            filtered_events = list(CampaignEvent.objects.filter(name__icontains=search))
+            print(events_list)
+            print(filtered_events)
+            final_list = []
             for event in events_list:
-                if event not in filtered_events:
-                    events_list.remove(event)
+                print(event)
+                if event in filtered_events:
+                    final_list.append(event)
 
-        paginator = Paginator(events_list, 25)
+        print(events_list)
+        paginator = Paginator(final_list, 25)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
         return render(request, 'organizer/campaign_events.html', {'page_obj': page_obj})
