@@ -6,7 +6,7 @@ from django.test import Client
 from django.urls import reverse
 from django.test import TestCase
 
-from organizer.models import Character, Relationship
+from organizer.models import Character, Relationship, Location
 
 
 # Create your tests here.
@@ -187,3 +187,70 @@ def test_relationship_details(relationship_fixt, characters_fixt):
     response = client.get(url)
     assert response.status_code == 200
 
+@pytest.mark.django_db
+def test_location_list(locations_fixt):
+    client = Client()
+    url = reverse('locations')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.context['page_obj'].paginator.count == len(locations_fixt)
+    for loc in locations_fixt:
+        assert loc in response.context['page_obj']
+
+@pytest.mark.django_db
+def test_location_details(locations_fixt):
+    client = Client()
+    url = reverse('location-details', kwargs={'id': locations_fixt[0].id})
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_add_location(user_fixt):
+    client = Client()
+    client.force_login(user_fixt)
+    url = reverse('add-location')
+    data = {
+        'name': 'Test_loc',
+        'description': 'desc',
+        'updated_at': datetime.datetime.now(),
+        'created_at': datetime.datetime.now()
+
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    redirect_url = reverse('locations')
+    assert response.url.startswith(redirect_url)
+    loc = Location.objects.get(name='Test_loc')
+    assert loc
+
+@pytest.mark.django_db
+def test_edit_location(locations_fixt, user_fixt):
+    client = Client()
+    client.force_login(user_fixt)
+    url = reverse('edit-location', kwargs={'id': locations_fixt[0].id})
+
+    data = {
+        'name': 'New_name',
+        'description': 'desc',
+        'updated_at': datetime.datetime.now(),
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    loc = Location.objects.get(name='New_name')
+    assert loc.id == locations_fixt[0].id
+
+@pytest.mark.django_db
+def test_delete_location(user_fixt, locations_fixt):
+    client = Client()
+    client.force_login(user_fixt)
+    assert Location.objects.get(pk=locations_fixt[0].id)
+    url = reverse('delete-location', kwargs={'id': locations_fixt[0].id})
+    response = client.get(url)
+    assert response.status_code == 302
+    try:
+        Location.objects.get(pk=locations_fixt[0].id)
+        assert False
+    except ObjectDoesNotExist:
+        assert True
+    redirect_url = reverse('locations')
+    assert response.url.startswith(redirect_url)
