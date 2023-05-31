@@ -86,8 +86,10 @@ class AddPlayerCharacter(LoginRequiredMixin, View):
         level = request.POST.get('level')
         character_sheet = request.POST.get('character_sheet')
 
-        age = validate_age_or_level(age)
-        level = validate_age_or_level(level)
+        if age:
+            age = validate_age_or_level(age)
+        if level:
+            level = validate_age_or_level(level)
 
 
         PlayerCharacter.objects.create(
@@ -127,7 +129,8 @@ class AddNonPlayableCharacter(LoginRequiredMixin, View):
         history_with_players = request.POST.get('history_with_players')
         stat_block = request.POST.get('stat_block')
 
-        age = validate_age_or_level(age)
+        if age:
+            age = validate_age_or_level(age)
 
         NonPlayableCharacter.objects.create(
             name=name,
@@ -170,13 +173,15 @@ class EditCharacter(LoginRequiredMixin, View):
         character.gm_notes = request.POST.get('gm_notes')
         character.updated_at = datetime.datetime.now()
 
-        character.age = validate_age_or_level(age)
+        if character.age:
+            character.age = validate_age_or_level(age)
 
         if isinstance(character, PlayerCharacter):
             character.player = request.POST.get('player')
             character.character_class = request.POST.get('character_class')
             level = request.POST.get('level')
-            character.level = validate_age_or_level(level)
+            if character.level:
+                character.level = validate_age_or_level(level)
         else:
             character.role = request.POST.get('role')
             character.history_with_players = request.POST.get('history_with_players')
