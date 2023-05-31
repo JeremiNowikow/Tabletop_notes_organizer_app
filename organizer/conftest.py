@@ -3,7 +3,8 @@ import datetime
 import pytest
 from django.contrib.auth.models import User
 
-from organizer.models import Character, PlayerCharacter, NonPlayableCharacter
+from organizer.models import Character, PlayerCharacter, NonPlayableCharacter, Relationship
+
 
 @pytest.fixture
 def characters_fixt():
@@ -18,3 +19,7 @@ def characters_fixt():
 def user_fixt():
     u = User.objects.create(username='test')
     return u
+
+@pytest.fixture
+def relationship_fixt(characters_fixt):
+    return Relationship.objects.create(first_person=characters_fixt[0], second_person=characters_fixt[1], type='friends', description='desc')

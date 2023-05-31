@@ -262,7 +262,7 @@ class EditRelationship(LoginRequiredMixin, View):
         relationship.description = description
         relationship.save()
 
-        return redirect('character-details', id=id)
+        return redirect('character-details', id=char_id)
 
 
 # displays the details of the specified relationship with its description
