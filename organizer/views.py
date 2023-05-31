@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -59,7 +60,7 @@ class ShowCharacterDetails(View):
 
 
 # deletes the chosen character from the database
-class DeleteCharacter(View):
+class DeleteCharacter(LoginRequiredMixin, View):
     def get(self, request, id):
         character = Character.objects.get(pk=id)
         character.delete()
@@ -67,7 +68,7 @@ class DeleteCharacter(View):
 
 
 # adds a new player character through a form
-class AddPlayerCharacter(View):
+class AddPlayerCharacter(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'organizer/create_character.html', {'player': True})
     def post(self, request):
@@ -110,7 +111,7 @@ class AddPlayerCharacter(View):
 
 
 # adds a new non-playable character through a form
-class AddNonPlayableCharacter(View):
+class AddNonPlayableCharacter(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'organizer/create_character.html', {'player': False})
     def post(self, request):
@@ -148,7 +149,7 @@ class AddNonPlayableCharacter(View):
 
 
 # edits information about an existing character
-class EditCharacter(View):
+class EditCharacter(LoginRequiredMixin, View):
     def get(self, request, id):
         character = Character.objects.get(pk=id)
         if isinstance(character, PlayerCharacter):
@@ -203,7 +204,7 @@ class LocationListView(View):
 
 
 # creates a new relationship between two characters
-class AddRelationship(View):
+class AddRelationship(LoginRequiredMixin, View):
      def get(self, request, id):
           character = Character.objects.get(pk=id)
           all_characters = Character.objects.filter(~Q(pk=id))
@@ -222,7 +223,7 @@ class AddRelationship(View):
 
 
 # deletes an existing relationship from the database
-class DeleteRelationship(View):
+class DeleteRelationship(LoginRequiredMixin, View):
     def get(self, request, id, char_id):
         relationship = Relationship.objects.get(pk=id)
         relationship.delete()
@@ -230,7 +231,7 @@ class DeleteRelationship(View):
 
 
 # edits an existing relationship
-class EditRelationship(View):
+class EditRelationship(LoginRequiredMixin, View):
     def get(self, request, id, char_id):
         relationship = Relationship.objects.get(pk=id)
         all_characters = Character.objects.filter(~Q(pk=id))
@@ -269,7 +270,7 @@ class RelationshipDetails(View):
 
 
 # deletes a location from the database
-class DeleteLocation(View):
+class DeleteLocation(LoginRequiredMixin, View):
     def get(self, request, id):
         location = Location.objects.get(pk=id)
         location.delete()
@@ -285,7 +286,7 @@ class ShowLocationDetails(View):
 
 
 # add a location to the database
-class AddLocation(View):
+class AddLocation(LoginRequiredMixin, View):
     def get(self, request):
         locations = Location.objects.all()
         characters = Character.objects.all()
@@ -320,7 +321,7 @@ class AddLocation(View):
 
 
 # edits an existing location through user input
-class EditLocation(View):
+class EditLocation(LoginRequiredMixin, View):
     def get(self, request, id):
         location = Location.objects.get(pk=id)
         other_locations = Location.objects.filter(~Q(pk=id))
@@ -368,7 +369,7 @@ class LoreEventListView(View):
 
 
 # deletes lore event from the database
-class DeleteLoreEvent(View):
+class DeleteLoreEvent(LoginRequiredMixin, View):
     def get(self, request, id):
         event = LoreEvent.objects.get(pk=id)
         event.delete()
@@ -377,7 +378,7 @@ class DeleteLoreEvent(View):
 
 
 # adds a new lore event to the database
-class AddLoreEvent(View):
+class AddLoreEvent(LoginRequiredMixin, View):
     def get(self, request):
         locations = Location.objects.all()
         characters = Character.objects.all()
@@ -418,7 +419,7 @@ class LoreEventDetails(View):
 
 
 # edits information about the specified lore event
-class EditLoreEvent(View):
+class EditLoreEvent(LoginRequiredMixin, View):
     def get(self, request, id):
         locations = Location.objects.all()
         characters = Character.objects.all()
@@ -494,7 +495,7 @@ class CampaignEventListView(View):
 
 
 # removes the specified campaign event from the database
-class DeleteCampaignEvent(View):
+class DeleteCampaignEvent(LoginRequiredMixin, View):
     def get(self, request, id):
         event = CampaignEvent.objects.get(pk=id)
         prev_event = event.previous_event
@@ -516,7 +517,7 @@ class CampaignEventDetails(View):
 
 
 # adds a new campaign events chronologically between existing events
-class AddCampaignEventAbove(View):
+class AddCampaignEventAbove(LoginRequiredMixin, View):
     def get(self, request, id):
         return render(request, 'organizer/create_campaign_event.html')
     def post(self, request, id):
@@ -547,7 +548,7 @@ class AddCampaignEventAbove(View):
         return redirect('campaign-events')
 
 
-class EditCampaignEvent(View):
+class EditCampaignEvent(LoginRequiredMixin, View):
     def get(self, request, id):
         event = CampaignEvent.objects.get(pk=id)
         return render(request, 'organizer/edit_campaign_event.html', {'event': event})
@@ -566,7 +567,7 @@ class EditCampaignEvent(View):
 
 
 # adds a new campaign event as the last in chronological order
-class AddCampaignEventEnd(View):
+class AddCampaignEventEnd(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'organizer/create_campaign_event.html')
     def post(self, request):
