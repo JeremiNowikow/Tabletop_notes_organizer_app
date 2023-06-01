@@ -6,7 +6,7 @@ from django.test import Client
 from django.urls import reverse
 from django.test import TestCase
 
-from organizer.models import Character, Relationship, Location
+from organizer.models import Character, Relationship, Location, LoreEvent
 
 
 # Create your tests here.
@@ -254,3 +254,71 @@ def test_delete_location(user_fixt, locations_fixt):
         assert True
     redirect_url = reverse('locations')
     assert response.url.startswith(redirect_url)
+
+@pytest.mark.django_db
+def test_lore_event_list(lore_events_fixt):
+    client = Client()
+    url = reverse('lore-events')
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.context['page_obj'].paginator.count == len(lore_events_fixt)
+    for event in lore_events_fixt:
+        assert event in response.context['page_obj']
+
+@pytest.mark.django_db
+def test_lore_event_details(lore_events_fixt):
+    client = Client()
+    url = reverse('lore-event-details', kwargs={'id': lore_events_fixt[0].id})
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_delete_lore_event(user_fixt, lore_events_fixt):
+    client = Client()
+    client.force_login(user_fixt)
+    assert LoreEvent.objects.get(pk=lore_events_fixt[0].id)
+    url = reverse('delete-lore-event', kwargs={'id': lore_events_fixt[0].id})
+    response = client.get(url)
+    assert response.status_code == 302
+    try:
+        LoreEvent.objects.get(pk=lore_events_fixt[0].id)
+        assert False
+    except ObjectDoesNotExist:
+        assert True
+    redirect_url = reverse('lore-events')
+    assert response.url.startswith(redirect_url)
+
+@pytest.mark.django_db
+def test_add_lore_event(user_fixt):
+    client = Client()
+    client.force_login(user_fixt)
+    url = reverse('add-lore-event')
+    data = {
+        'name': 'Test_event',
+        'summary': 'desc',
+        'updated_at': datetime.datetime.now(),
+        'created_at': datetime.datetime.now()
+
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    redirect_url = reverse('lore-events')
+    assert response.url.startswith(redirect_url)
+    event = LoreEvent.objects.get(name='Test_event')
+    assert event
+
+@pytest.mark.django_db
+def test_edit_location(lore_events_fixt, user_fixt):
+    client = Client()
+    client.force_login(user_fixt)
+    url = reverse('edit-lore-event', kwargs={'id': lore_events_fixt[0].id})
+
+    data = {
+        'name': 'New_name',
+        'summary': 'summary',
+        'updated_at': datetime.datetime.now(),
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+    event = LoreEvent.objects.get(name='New_name')
+    assert event.id == lore_events_fixt[0].id
