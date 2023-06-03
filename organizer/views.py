@@ -88,8 +88,14 @@ class AddPlayerCharacter(LoginRequiredMixin, View):
 
         if age:
             age = validate_age_or_level(age)
+        else:
+            age = None
+
         if level:
             level = validate_age_or_level(level)
+        else:
+            level = None
+
 
 
         PlayerCharacter.objects.create(
