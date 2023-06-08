@@ -4,7 +4,7 @@
 ## Table of contents
 
 * [About](#about)
-* [Current features](#features)
+* [Current features](#current-features)
 * [Technologies](#technologies)
 * [Plans for the future](#plans-for-the-future)
 
