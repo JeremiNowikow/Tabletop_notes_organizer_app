@@ -32,6 +32,17 @@ events that happened so far in the campaign.
 
 ***
 
+## Current features
+
+* Managing information about the player and non-playable characters existing in the
+user's game world, and the relationships between them.
+* Managing information about the locations in the user's world.
+* Managing information about the lore and history of the user's world.
+* Creating a chronological summary of the events that have occurred so far
+in the user's campaign
+
+***
+
 ## Technologies
 
 The app was created using:
